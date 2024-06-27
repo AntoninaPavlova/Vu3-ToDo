@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <div>
+  <div class="app-wrapper">
     <keep-alive>
       <router-view />
     </keep-alive>
@@ -11,4 +11,15 @@ import { RouterView } from 'vue-router';
 </template>
 
 <style scoped>
+.app-wrapper {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+
+  color: var(--white-color);
+
+  box-sizing: border-box;
+  overflow: hidden;
+}
 </style>
