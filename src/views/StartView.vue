@@ -5,20 +5,24 @@ import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
 
 import { ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 const tasks = ref([]);
 const showResult = ref(false);
+const toast = useToast();
 
 const generateUniqueId = () => Date.now();
 
 const updateTaskTextHandler = (task) => {
   tasks.value.push({ id: generateUniqueId(), text: task, completed: false });
   showResult.value = true;
+  toast.success('Задача успешно добавлена');
 };
 
 const deleteTask = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
   showResult.value = tasks.value.length > 0;
+  toast.success('Задача успешно удалена');
 };
 </script>
 
