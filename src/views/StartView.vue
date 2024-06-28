@@ -15,6 +15,11 @@ const updateTaskTextHandler = (task) => {
   tasks.value.push({ id: generateUniqueId(), text: task, completed: false });
   showResult.value = true;
 };
+
+const deleteTask = (id) => {
+  tasks.value = tasks.value.filter((task) => task.id !== id);
+  showResult.value = tasks.value.length > 0;
+};
 </script>
 
 <template>
@@ -28,7 +33,13 @@ const updateTaskTextHandler = (task) => {
         <div v-if="showResult" class="app-result">
           <div class="app-table">
             <ul class="app-list">
-              <TaskItem v-for="task in tasks" :key="task.id" :taskText="task.text" />
+              <TaskItem
+                v-for="task in tasks"
+                :key="task.id"
+                :taskText="task.text"
+                :taskId="task.id"
+                @deleteTask="deleteTask"
+              />
             </ul>
           </div>
           <div class="app-sorted">

@@ -1,5 +1,12 @@
 <script setup>
-const props = defineProps(['taskText']);
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps(['taskText', 'taskId']);
+const emit = defineEmits(['deleteTask']);
+
+const handleDeleteTask = () => {
+  emit('deleteTask', props.taskId);
+};
 </script>
 
 <template>
@@ -7,7 +14,7 @@ const props = defineProps(['taskText']);
     <input type="checkbox" id="app-task__checkbox" class="app-task__checkbox" />
     <label for="app-task__checkbox" class="app-task__label"></label>
     <span class="app-task__text">{{ taskText }}</span>
-    <div class="app-task___delete">
+    <div @click="handleDeleteTask" class="app-task___delete">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         x="0px"
