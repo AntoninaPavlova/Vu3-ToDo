@@ -7,11 +7,13 @@ import TaskItem from '@/components/general/TaskItem.vue';
 import { ref } from 'vue';
 
 const tasks = ref([]);
+const showResult = ref(false);
 
 const generateUniqueId = () => Date.now();
 
 const updateTaskTextHandler = (task) => {
   tasks.value.push({ id: generateUniqueId(), text: task, completed: false });
+  showResult.value = true;
 };
 </script>
 
@@ -23,7 +25,7 @@ const updateTaskTextHandler = (task) => {
         <div class="app-display">
           <DisplayInput @updateTaskTextEvent="updateTaskTextHandler" />
         </div>
-        <div class="app-result">
+        <div v-if="showResult" class="app-result">
           <div class="app-table">
             <ul class="app-list">
               <TaskItem v-for="task in tasks" :key="task.id" :taskText="task.text" />
