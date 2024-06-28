@@ -1,8 +1,14 @@
+<script setup>
+const props = defineProps({
+  taskText: Object,
+});
+</script>
+
 <template>
   <li class="app-task">
     <input type="checkbox" id="app-task__checkbox" class="app-task__checkbox" />
     <label for="app-task__checkbox" class="app-task__label"></label>
-    <span class="app-task__text">Читать</span>
+    <span class="app-task__text">{{ taskText }}</span>
     <div class="app-task___delete">
       <svg
         xmlns="http://www.w3.org/2000/svg"

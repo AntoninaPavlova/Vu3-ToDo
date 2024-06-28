@@ -1,0 +1,37 @@
+1. —оздание компонента во Vue3 и импорт его на конкретную страницу.
+
+-создаем папку components
+-в ней файл NameComponent.vue
+-далее на странице, на которой хотим использовать этот компонент мы
+// NamePage.vue
+<script setup>
+import  NameComponent from '@/components/NameComponent.vue';
+</script> 
+<template>
+  <div>
+    < NameComponent />
+  </div>
+</template>
+
+2. ≈сли в компоненте есть входные параметры, сначала их прописаваем в template, а далее их нужно объ€вить, использу€ макрос defineProps():
+// NameComponent.vue
+<script setup>
+const { label, btnClass } = defineProps({
+  label: String,
+  btnClass: String,
+});
+</script>
+
+<template>
+  <button type="button" class="app-sorted__btn" :class="btnClass">{{ label }}</button>
+</template>
+
+:class="btnClass" - дл€ динамического добавлени€ класов к элементу - используем директиву :
+{{ label }} - дл€ динамической интерпол€ции значени€ в HTML используем {{ }}
+
+v-bind - : - директива, котора€ используетс€ дл€ динамической прив€зки атрибутов, классов, стилей
+
+ƒалее передаем значени€ этих параметров в компонент на странице
+// NamePage.vue
+ <NameComponent label="All" btnClass="btn--all" />
+

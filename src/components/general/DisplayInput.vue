@@ -1,5 +1,26 @@
+<script setup>
+import { ref } from 'vue';
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(['updateTaskTextEvent']);
+const taskText = ref('');
+
+const updateTaskText = () => {
+  if (taskText.value.trim()) {
+    emit('updateTaskTextEvent', taskText.value);
+    taskText.value = '';
+  }
+};
+</script>
+
 <template>
-  <input type="text" class="app-display__input" placeholder="Search todo?" />
+  <input
+    type="text"
+    class="app-display__input"
+    placeholder="Search todo?"
+    @keyup.enter="updateTaskText"
+    v-model="taskText"
+  />
 </template>
 
 <style scoped>

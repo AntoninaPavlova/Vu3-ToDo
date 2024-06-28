@@ -1,7 +1,5 @@
 <script setup>
-const { label } = defineProps({
-  label: String,
-});
+const props = defineProps(['label']);
 </script>
 
 <template>

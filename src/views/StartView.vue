@@ -3,6 +3,16 @@ import SortedButton from '@/components/buttons/SortedButton.vue';
 import ClearButton from '@/components/buttons/ClearButton.vue';
 import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
+
+import { ref } from 'vue';
+
+const tasks = ref([]);
+
+const generateUniqueId = () => Date.now();
+
+const updateTaskTextHandler = (task) => {
+  tasks.value.push({ id: generateUniqueId(), text: task, completed: false });
+};
 </script>
 
 <template>
@@ -11,12 +21,12 @@ import TaskItem from '@/components/general/TaskItem.vue';
       <section class="app-section">
         <h1 class="app-title">Todo List</h1>
         <div class="app-display">
-          <DisplayInput />
+          <DisplayInput @updateTaskTextEvent="updateTaskTextHandler" />
         </div>
         <div class="app-result">
           <div class="app-table">
             <ul class="app-list">
-              <TaskItem />
+              <TaskItem v-for="task in tasks" :key="task.id" :taskText="task.text" />
             </ul>
           </div>
           <div class="app-sorted">
