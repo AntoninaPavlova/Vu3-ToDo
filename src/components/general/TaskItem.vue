@@ -1,7 +1,5 @@
 <script setup>
-const props = defineProps({
-  taskText: Object,
-});
+const props = defineProps(['taskText']);
 </script>
 
 <template>
