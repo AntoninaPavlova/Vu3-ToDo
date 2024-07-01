@@ -14,18 +14,24 @@ const toast = useToast();
 const generateUniqueId = () => Date.now();
 
 const updateTaskTextHandler = (task) => {
-  tasks.value.push({ id: generateUniqueId(), text: task, completed: false });
-  showResult.value = true;
-  toast.success('Задача успешно добавлена');
+  const trimmedTask = task.trim();
+
+  if (trimmedTask) {
+    tasks.value.push({ id: generateUniqueId(), text: trimmedTask, completed: false });
+    showResult.value = true;
+    toast.success('Задача успешно добавлена');
+  } else {
+    toast.error('Пожалуйста, введите текст задачи');
+  }
 };
 
-const deleteTask = (id) => {
+const deleteTaskHandler = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
   showResult.value = tasks.value.length > 0;
   toast.success('Задача успешно удалена');
 };
 
-const completeTask = (id) => {
+const completedTaskHandler = (id) => {
   tasks.value = tasks.value.map((task) => {
     if (task.id === id) {
       return { ...task, completed: !task.completed };
@@ -41,7 +47,7 @@ const completeTask = (id) => {
       <section class="app-section">
         <h1 class="app-title">Todo List</h1>
         <div class="app-display">
-          <DisplayInput @updateTaskTextEvent="updateTaskTextHandler" />
+          <DisplayInput @updateTaskText="updateTaskTextHandler" />
         </div>
         <div v-if="showResult" class="app-result">
           <div class="app-table">
@@ -51,8 +57,9 @@ const completeTask = (id) => {
                 :key="task.id"
                 :taskText="task.text"
                 :taskId="task.id"
-                @deleteTask="deleteTask"
-                @completeTask="completeTask"
+                :completed="task.completed"
+                @deleteTask="deleteTaskHandler"
+                @completedTask="completedTaskHandler"
               />
             </ul>
           </div>

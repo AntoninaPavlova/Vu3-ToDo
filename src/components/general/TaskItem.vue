@@ -6,24 +6,24 @@ const props = defineProps({
   taskId: Number,
   completed: Boolean,
 });
+
 const emit = defineEmits(['deleteTask', 'completeTask']);
 
-const handleDeleteTask = () => {
+const deleteTask = () => {
   emit('deleteTask', props.taskId);
 };
 
-const completeTask = () => {
+const completedTask = () => {
   console.log('Completing task with ID:', props.taskId);
-  emit('completeTask', props.taskId);
+  emit('completedTask', props.taskId);
 };
 </script>
 
 <template>
   <li class="app-task">
-    <input type="checkbox" class="app-task__checkbox" @change="completeTask" :checked="completed" />
-    <label for="app-task__checkbox" class="app-task__label"></label>
+    <input type="checkbox" class="app-task__checkbox" @change="completedTask" :class="{ checked: completed }" />
     <span class="app-task__text">{{ taskText }}</span>
-    <div @click="handleDeleteTask" class="app-task___delete">
+    <div @click="deleteTask" class="app-task___delete">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         x="0px"
@@ -77,7 +77,14 @@ const completeTask = () => {
 }
 
 .app-task__checkbox {
-  display: none;
+  position: relative;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--white-color);
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
 }
 
 .app-task__label {
@@ -91,11 +98,11 @@ const completeTask = () => {
   cursor: pointer;
 }
 
-.app-task__checkbox:checked + .app-task__label {
+.app-task__checkbox:checked {
   background-color: var(--white-color);
 }
 
-.app-task__checkbox:checked + .app-task__label + .app-task__text {
+.app-task__checkbox:checked + .app-task__text {
   text-decoration: line-through;
 }
 

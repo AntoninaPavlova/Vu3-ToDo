@@ -1,16 +1,11 @@
 <script setup>
 import { defineEmits, ref } from 'vue';
 
-const emit = defineEmits(['updateTaskTextEvent']);
+const emit = defineEmits(['updateTaskText']);
 const taskText = ref('');
 
 const updateTaskText = () => {
-  const task = taskText.value.trim();
-
-  if (task) {
-    emit('updateTaskTextEvent', taskText.value);
-    taskText.value = '';
-  }
+  emit('updateTaskText', taskText.value);
 };
 </script>
 
