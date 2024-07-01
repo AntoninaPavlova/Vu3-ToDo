@@ -32,3 +32,8 @@ button {
   border: none;
   outline: none;
 }
+
+.Vue-Toastification__toast--success {
+  background-color: #3857D3!important;
+  color: #fff;
+}

@@ -22,4 +22,10 @@ import { RouterView } from 'vue-router';
   box-sizing: border-box;
   overflow: hidden;
 }
+
+@media (max-width: 991.98px) {
+  .app-wrapper {
+    padding: 90px 20px;
+  }
+}
 </style>
