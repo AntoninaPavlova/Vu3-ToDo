@@ -5,11 +5,11 @@ const props = defineProps({
   taskText: String,
   taskId: Number,
   completed: Boolean,
-  isEditing: Boolean,
   editingTaskId: Number,
+  newText: String,
 });
 
-const emit = defineEmits(['deleteTask', 'completeTask', 'startEditing']);
+const emit = defineEmits(['deleteTask', 'completeTask', 'startEditing', 'editingTaskText']);
 
 const deleteTask = () => {
   emit('deleteTask', props.taskId);
@@ -22,13 +22,22 @@ const completedTask = () => {
 const startEditing = () => {
   emit('startEditing', props.taskId);
 };
+
+const editingTaskText = (newText) => {
+  emit('editingTaskText', newText);
+};
 </script>
 
 <template>
   <li class="app-task">
-    <input type="checkbox" class="app-task__checkbox" @change="completedTask" :class="{ checked: completed }" />
+    <input
+      type="checkbox"
+      class="app-task__checkbox"
+      @change="completedTask"
+      :class="{ checked: completed, inactive: editingTaskId === props.taskId }"
+    />
     <div v-if="editingTaskId === props.taskId" class="app-task__state">
-      <input class="app-task__edit-input" :value="taskText" />
+      <input class="app-task__edit-input" :value="taskText" @keyup.enter="editingTaskText($event.target.value)" />
     </div>
 
     <div v-else class="app-task__state">

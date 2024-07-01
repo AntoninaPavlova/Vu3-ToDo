@@ -63,6 +63,17 @@ const checkCompletedTasks = () => {
 const startEditingHandler = (id) => {
   editingTaskId.value = id;
 };
+
+const editingTaskTextHandler = (newText) => {
+  tasks.value = tasks.value.map((task) => {
+    if (task.id === editingTaskId.value) {
+      return { ...task, text: newText };
+    }
+    return task;
+  });
+  editingTaskId.value = null;
+  toast.success('Задача успешно отредактирована!');
+};
 </script>
 
 <template>
@@ -83,9 +94,11 @@ const startEditingHandler = (id) => {
                 :taskId="task.id"
                 :completed="task.completed"
                 :editingTaskId="editingTaskId"
+                :newText="task.newText"
                 @deleteTask="deleteTaskHandler"
                 @completedTask="completedTaskHandler"
                 @startEditing="startEditingHandler"
+                @editingTaskText="editingTaskTextHandler"
               />
             </ul>
           </div>
