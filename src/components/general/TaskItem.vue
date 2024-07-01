@@ -23,7 +23,7 @@ const completedTask = () => {
   <li class="app-task">
     <input type="checkbox" class="app-task__checkbox" @change="completedTask" :class="{ checked: completed }" />
     <span class="app-task__text">{{ taskText }}</span>
-    <div @click="deleteTask" class="app-task___delete">
+    <div @click="deleteTask" class="app-task___delete" :class="{ 'app-task____delete': true, inactive: !completed }">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         x="0px"
@@ -114,5 +114,10 @@ const completedTask = () => {
   justify-self: end;
 
   cursor: pointer;
+}
+
+.inactive {
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

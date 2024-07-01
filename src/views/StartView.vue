@@ -8,7 +8,8 @@ import { ref } from 'vue';
 import { useToast } from 'vue-toastification';
 
 const tasks = ref([]);
-const showResult = ref(false);
+const isShowResult = ref(false);
+const isShowClearBtn = ref(false);
 const toast = useToast();
 
 const generateUniqueId = () => Date.now();
@@ -18,7 +19,7 @@ const updateTaskTextHandler = (task) => {
 
   if (trimmedTask) {
     tasks.value.push({ id: generateUniqueId(), text: trimmedTask, completed: false });
-    showResult.value = true;
+    isShowResult.value = true;
     toast.success('Задача успешно добавлена');
   } else {
     toast.error('Пожалуйста, введите текст задачи');
@@ -27,23 +28,34 @@ const updateTaskTextHandler = (task) => {
 
 const deleteTaskHandler = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
-  showResult.value = tasks.value.length > 0;
+  isShowResult.value = tasks.value.length > 0;
   toast.success('Задача успешно удалена');
 };
 
 const completedTaskHandler = (id) => {
   tasks.value = tasks.value.map((task) => {
     if (task.id === id) {
-      return { ...task, completed: !task.completed };
+      const updatedTask = { ...task, completed: !task.completed };
+      return updatedTask;
     }
     return task;
   });
+
+  checkCompletedTasks();
 };
 
 const deleteCompletedTaskHandler = () => {
+  const initialTasksLength = tasks.value.length;
   tasks.value = tasks.value.filter((task) => !task.completed);
-  showResult.value = tasks.value.length > 0;
-  toast.success('Выполненные задачи были удалены');
+
+  if (tasks.value.length < initialTasksLength) {
+    isShowResult.value = tasks.value.length > 0;
+    toast.success('Выполненные задачи были удалены');
+  }
+};
+
+const checkCompletedTasks = () => {
+  isShowClearBtn.value = tasks.value.some((task) => task.completed);
 };
 </script>
 
@@ -55,7 +67,7 @@ const deleteCompletedTaskHandler = () => {
         <div class="app-display">
           <DisplayInput @updateTaskText="updateTaskTextHandler" />
         </div>
-        <div v-if="showResult" class="app-result">
+        <div v-if="isShowResult" class="app-result">
           <div class="app-table">
             <ul class="app-list">
               <TaskItem
@@ -79,7 +91,11 @@ const deleteCompletedTaskHandler = () => {
 
           <div class="app-clear">
             <div class="app-clear__btns">
-              <ClearButton label="Clear completed" @deleteCompletedTask="deleteCompletedTaskHandler" />
+              <ClearButton
+                v-if="isShowClearBtn"
+                label="Clear completed"
+                @deleteCompletedTask="deleteCompletedTaskHandler"
+              />
             </div>
           </div>
         </div>
