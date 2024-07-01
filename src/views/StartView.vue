@@ -24,6 +24,15 @@ const deleteTask = (id) => {
   showResult.value = tasks.value.length > 0;
   toast.success('Задача успешно удалена');
 };
+
+const completeTask = (id) => {
+  tasks.value = tasks.value.map((task) => {
+    if (task.id === id) {
+      return { ...task, completed: !task.completed };
+    }
+    return task;
+  });
+};
 </script>
 
 <template>
@@ -43,6 +52,7 @@ const deleteTask = (id) => {
                 :taskText="task.text"
                 :taskId="task.id"
                 @deleteTask="deleteTask"
+                @completeTask="completeTask"
               />
             </ul>
           </div>

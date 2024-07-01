@@ -1,5 +1,8 @@
 <script setup>
-const props = defineProps(['label', 'btnClass']);
+const props = defineProps({
+  label: String,
+  btnClass: String,
+});
 </script>
 
 <template>

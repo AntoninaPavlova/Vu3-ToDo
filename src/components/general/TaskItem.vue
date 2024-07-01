@@ -1,17 +1,26 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue';
 
-const props = defineProps(['taskText', 'taskId']);
-const emit = defineEmits(['deleteTask']);
+const props = defineProps({
+  taskText: String,
+  taskId: Number,
+  completed: Boolean,
+});
+const emit = defineEmits(['deleteTask', 'completeTask']);
 
 const handleDeleteTask = () => {
   emit('deleteTask', props.taskId);
+};
+
+const completeTask = () => {
+  console.log('Completing task with ID:', props.taskId);
+  emit('completeTask', props.taskId);
 };
 </script>
 
 <template>
   <li class="app-task">
-    <input type="checkbox" id="app-task__checkbox" class="app-task__checkbox" />
+    <input type="checkbox" class="app-task__checkbox" @change="completeTask" :checked="completed" />
     <label for="app-task__checkbox" class="app-task__label"></label>
     <span class="app-task__text">{{ taskText }}</span>
     <div @click="handleDeleteTask" class="app-task___delete">

@@ -10,7 +10,7 @@ import 'vue-toastification/dist/index.css';
 const app = createApp(App);
 
 const options = {
-  timeout: 3000,
+  //   timeout: 3000,
 };
 
 app.use(Toast, options);
