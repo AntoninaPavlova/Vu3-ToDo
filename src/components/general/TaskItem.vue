@@ -5,24 +5,35 @@ const props = defineProps({
   taskText: String,
   taskId: Number,
   completed: Boolean,
+  isEditing: Boolean,
+  editingTaskId: Number,
 });
 
-const emit = defineEmits(['deleteTask', 'completeTask']);
+const emit = defineEmits(['deleteTask', 'completeTask', 'startEditing']);
 
 const deleteTask = () => {
   emit('deleteTask', props.taskId);
 };
 
 const completedTask = () => {
-  console.log('Completing task with ID:', props.taskId);
   emit('completedTask', props.taskId);
+};
+
+const startEditing = () => {
+  emit('startEditing', props.taskId);
 };
 </script>
 
 <template>
   <li class="app-task">
     <input type="checkbox" class="app-task__checkbox" @change="completedTask" :class="{ checked: completed }" />
-    <span class="app-task__text">{{ taskText }}</span>
+    <div v-if="editingTaskId === props.taskId" class="app-task__state">
+      <input class="app-task__edit-input" :value="taskText" />
+    </div>
+
+    <div v-else class="app-task__state">
+      <span @click="startEditing" class="app-task__text">{{ taskText }}</span>
+    </div>
     <div @click="deleteTask" class="app-task___delete" :class="{ inactive: !completed }">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -108,6 +119,8 @@ const completedTask = () => {
 
 .app-task__text {
   font-size: 16px;
+
+  cursor: pointer;
 }
 
 .app-task___delete {
@@ -119,5 +132,12 @@ const completedTask = () => {
 .inactive {
   pointer-events: none;
   opacity: 0.5;
+}
+
+.app-task__edit-input {
+  height: 25px;
+  padding: 5px;
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 </style>

@@ -7,10 +7,12 @@ import TaskItem from '@/components/general/TaskItem.vue';
 import { ref } from 'vue';
 import { useToast } from 'vue-toastification';
 
+const toast = useToast();
+
 const tasks = ref([]);
 const isShowResult = ref(false);
 const isShowClearBtn = ref(false);
-const toast = useToast();
+const editingTaskId = ref(null);
 
 const generateUniqueId = () => Date.now();
 
@@ -57,6 +59,10 @@ const deleteCompletedTaskHandler = () => {
 const checkCompletedTasks = () => {
   isShowClearBtn.value = tasks.value.some((task) => task.completed);
 };
+
+const startEditingHandler = (id) => {
+  editingTaskId.value = id;
+};
 </script>
 
 <template>
@@ -76,8 +82,10 @@ const checkCompletedTasks = () => {
                 :taskText="task.text"
                 :taskId="task.id"
                 :completed="task.completed"
+                :editingTaskId="editingTaskId"
                 @deleteTask="deleteTaskHandler"
                 @completedTask="completedTaskHandler"
+                @startEditing="startEditingHandler"
               />
             </ul>
           </div>
