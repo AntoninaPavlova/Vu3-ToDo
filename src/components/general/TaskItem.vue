@@ -1,15 +1,16 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, ref, computed } from 'vue';
 
 const props = defineProps({
   taskText: String,
   taskId: Number,
   completed: Boolean,
-  editingTaskId: Number,
-  newText: String,
+  editedTaskId: Number,
 });
 
-const emit = defineEmits(['deleteTask', 'completeTask', 'startEditing', 'editingTaskText']);
+const editedTaskText = ref(props.taskText);
+
+const emit = defineEmits(['deleteTask', 'completeTask', 'startEditing', 'editTaskText']);
 
 const deleteTask = () => {
   emit('deleteTask', props.taskId);
@@ -23,9 +24,13 @@ const startEditing = () => {
   emit('startEditing', props.taskId);
 };
 
-const editingTaskText = (newText) => {
-  emit('editingTaskText', newText);
+const editTaskText = (editTaskText) => {
+  emit('editTaskText', editTaskText);
 };
+
+const isComparisonTaskId = computed(() => {
+  return props.editedTaskId === props.taskId;
+});
 </script>
 
 <template>
@@ -34,16 +39,16 @@ const editingTaskText = (newText) => {
       type="checkbox"
       class="app-task__checkbox"
       @change="completedTask"
-      :class="{ checked: completed, inactive: editingTaskId === props.taskId }"
+      :class="{ checked: completed, inactive: isComparisonTaskId }"
     />
-    <div v-if="editingTaskId === props.taskId" class="app-task__state">
-      <input class="app-task__edit-input" :value="taskText" @keyup.enter="editingTaskText($event.target.value)" />
+    <div v-if="isComparisonTaskId" class="app-task__state">
+      <input class="app-task__edit-input" v-model="editedTaskText" @keyup.enter="editTaskText($event.target.value)" />
     </div>
 
     <div v-else class="app-task__state">
-      <span @click="startEditing" class="app-task__text">{{ taskText }}</span>
+      <span @click="startEditing" class="app-task__text" :class="{ inactive: completed }">{{ taskText }}</span>
     </div>
-    <div @click="deleteTask" class="app-task___delete" :class="{ inactive: !completed }">
+    <div @click="deleteTask" class="app-task___delete" :class="{ inactive: isComparisonTaskId }">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         x="0px"
@@ -96,6 +101,10 @@ const editingTaskText = (newText) => {
   border-radius: 4px;
 }
 
+.app-task__state {
+  max-width: fit-content;
+}
+
 .app-task__checkbox {
   position: relative;
   appearance: none;
@@ -122,7 +131,7 @@ const editingTaskText = (newText) => {
   background-color: var(--white-color);
 }
 
-.app-task__checkbox:checked + .app-task__text {
+.app-task__checkbox:checked + .app-task__state .app-task__text {
   text-decoration: line-through;
 }
 

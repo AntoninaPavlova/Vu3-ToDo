@@ -12,7 +12,7 @@ const toast = useToast();
 const tasks = ref([]);
 const isShowResult = ref(false);
 const isShowClearBtn = ref(false);
-const editingTaskId = ref(null);
+const editedTaskId = ref(null);
 
 const generateUniqueId = () => Date.now();
 
@@ -61,17 +61,24 @@ const checkCompletedTasks = () => {
 };
 
 const startEditingHandler = (id) => {
-  editingTaskId.value = id;
+  editedTaskId.value = id;
 };
 
-const editingTaskTextHandler = (newText) => {
+const editTaskTextHandler = (editedTaskText) => {
+  const editedTrimmedTask = editedTaskText.trim();
+  if (editedTrimmedTask === '') {
+    toast.error('Текст задачи не может быть пустым!');
+    return;
+  }
+
   tasks.value = tasks.value.map((task) => {
-    if (task.id === editingTaskId.value) {
-      return { ...task, text: newText };
+    if (task.id === editedTaskId.value) {
+      return { ...task, text: editedTaskText };
     }
     return task;
   });
-  editingTaskId.value = null;
+
+  editedTaskId.value = null;
   toast.success('Задача успешно отредактирована!');
 };
 </script>
@@ -93,12 +100,12 @@ const editingTaskTextHandler = (newText) => {
                 :taskText="task.text"
                 :taskId="task.id"
                 :completed="task.completed"
-                :editingTaskId="editingTaskId"
-                :newText="task.newText"
+                :editedTaskId="editedTaskId"
+                :editedTaskText="task.editedTaskText"
                 @deleteTask="deleteTaskHandler"
                 @completedTask="completedTaskHandler"
                 @startEditing="startEditingHandler"
-                @editingTaskText="editingTaskTextHandler"
+                @editTaskText="editTaskTextHandler"
               />
             </ul>
           </div>
