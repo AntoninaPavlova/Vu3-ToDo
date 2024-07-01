@@ -2,10 +2,16 @@
 const props = defineProps({
   label: String,
 });
+
+const emit = defineEmits(['deleteCompletedTask']);
+
+const deleteCompletedTask = () => {
+  emit('deleteCompletedTask');
+};
 </script>
 
 <template>
-  <button type="button" class="app-clear__btn btn--clear-completed">{{ label }}</button>
+  <button @click="deleteCompletedTask" type="button" class="app-clear__btn btn--clear-completed">{{ label }}</button>
 </template>
 
 <style scoped>

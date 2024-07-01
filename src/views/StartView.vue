@@ -39,6 +39,12 @@ const completedTaskHandler = (id) => {
     return task;
   });
 };
+
+const deleteCompletedTaskHandler = () => {
+  tasks.value = tasks.value.filter((task) => !task.completed);
+  showResult.value = tasks.value.length > 0;
+  toast.success('Выполненные задачи были удалены');
+};
 </script>
 
 <template>
@@ -73,7 +79,7 @@ const completedTaskHandler = (id) => {
 
           <div class="app-clear">
             <div class="app-clear__btns">
-              <ClearButton label="Clear completed" />
+              <ClearButton label="Clear completed" @deleteCompletedTask="deleteCompletedTaskHandler" />
             </div>
           </div>
         </div>
