@@ -6,6 +6,7 @@ const taskText = ref('');
 
 const updateTaskText = () => {
   emit('updateTaskText', taskText.value);
+  taskText.value = '';
 };
 </script>
 
