@@ -4,7 +4,7 @@ import ClearButton from '@/components/buttons/ClearButton.vue';
 import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useLocalStorage } from '@vueuse/core';
 
@@ -32,6 +32,8 @@ const updateTaskTextHandler = (task) => {
 const deleteTaskHandler = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
   toast.success('Задача успешно удалена');
+
+  checkCompletedTasks();
 };
 
 const completedTaskHandler = (id) => {
@@ -88,21 +90,24 @@ const changeFilter = (filter) => {
 const isShowSorted = computed(() => (isShowSortedBtns.value = tasks.value.length > 0));
 
 const filteredTasks = computed(() => {
+  let filteredList = tasks.value;
+
   if (filterType.value === 'active') {
-    return tasks.value.filter((task) => !task.completed);
+    filteredList = tasks.value.filter((task) => !task.completed);
   } else if (filterType.value === 'completed') {
-    return tasks.value.filter((task) => task.completed);
-  } else {
+    filteredList = tasks.value.filter((task) => task.completed);
+  }
+
+  if (filteredList.length === 0) {
+    filterType.value = 'all';
     return tasks.value;
   }
+
+  return filteredList;
 });
 
-const isActiveBtnDisabled = computed(
-  () => filterType.value === 'active' || tasks.value.filter((task) => !task.completed).length === 0
-);
-const isCompletedBtnDisabled = computed(
-  () => filterType.value === 'completed' || tasks.value.filter((task) => task.completed).length === 0
-);
+const isActiveBtnDisabled = computed(() => tasks.value.filter((task) => !task.completed).length === 0);
+const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.completed).length === 0);
 </script>
 
 <template>
@@ -133,11 +138,17 @@ const isCompletedBtnDisabled = computed(
           </div>
           <div v-if="isShowSorted" class="app-sorted">
             <div class="app-sorted__btns">
-              <SortedButton label="All" btnClass="btn--all" @click="changeFilter('all')" />
+              <SortedButton
+                label="All"
+                btnClass="btn--all"
+                @click="changeFilter('all')"
+                :class="{ active: filterType === 'all' }"
+              />
               <SortedButton
                 label="Active"
                 btnClass="btn--active"
                 @click="changeFilter('active')"
+                :class="{ active: filterType === 'active' }"
                 :disabled="isActiveBtnDisabled"
               />
               <SortedButton
@@ -145,10 +156,10 @@ const isCompletedBtnDisabled = computed(
                 btnClass="btn--completed"
                 @click="changeFilter('completed')"
                 :disabled="isCompletedBtnDisabled"
+                :class="{ active: filterType === 'completed' }"
               />
             </div>
           </div>
-
           <div class="app-clear">
             <div class="app-clear__btns">
               <ClearButton
@@ -200,5 +211,9 @@ const isCompletedBtnDisabled = computed(
 .app-sorted__btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.active {
+  border: 1px solid #fff;
 }
 </style>
