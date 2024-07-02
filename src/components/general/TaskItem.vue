@@ -127,11 +127,11 @@ const isComparisonTaskId = computed(() => {
   cursor: pointer;
 }
 
-.app-task__checkbox:checked {
+.checked {
   background-color: var(--white-color);
 }
 
-.app-task__checkbox:checked + .app-task__state .app-task__text {
+.checked + .app-task__state .app-task__text {
   text-decoration: line-through;
 }
 

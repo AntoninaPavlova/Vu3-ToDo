@@ -4,7 +4,7 @@ import ClearButton from '@/components/buttons/ClearButton.vue';
 import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
@@ -13,6 +13,7 @@ const tasks = ref([]);
 const isShowResult = ref(false);
 const isShowClearBtn = ref(false);
 const editedTaskId = ref(null);
+const filterType = ref('all');
 
 const generateUniqueId = () => Date.now();
 
@@ -81,6 +82,27 @@ const editTaskTextHandler = (editedTaskText) => {
   editedTaskId.value = null;
   toast.success('Задача успешно отредактирована!');
 };
+
+const filteredTasks = computed(() => {
+  if (filterType.value === 'active') {
+    return tasks.value.filter((task) => !task.completed);
+  } else if (filterType.value === 'completed') {
+    return tasks.value.filter((task) => task.completed);
+  } else {
+    return tasks.value;
+  }
+});
+
+const changeFilter = (filter) => {
+  filterType.value = filter;
+};
+
+const isActiveBtnDisabled = computed(
+  () => filterType.value === 'active' || tasks.value.filter((task) => !task.completed).length === 0
+);
+const isCompletedBtnDisabled = computed(
+  () => filterType.value === 'completed' || tasks.value.filter((task) => task.completed).length === 0
+);
 </script>
 
 <template>
@@ -95,7 +117,7 @@ const editTaskTextHandler = (editedTaskText) => {
           <div class="app-table">
             <ul class="app-list">
               <TaskItem
-                v-for="task in tasks"
+                v-for="task in filteredTasks"
                 :key="task.id"
                 :taskText="task.text"
                 :taskId="task.id"
@@ -111,9 +133,19 @@ const editTaskTextHandler = (editedTaskText) => {
           </div>
           <div class="app-sorted">
             <div class="app-sorted__btns">
-              <SortedButton label="All" btnClass="btn--all" />
-              <SortedButton label="Active" btnClass="btn--active" />
-              <SortedButton label="Completed" btnClass="btn--completed" />
+              <SortedButton label="All" btnClass="btn--all" @click="changeFilter('all')" />
+              <SortedButton
+                label="Active"
+                btnClass="btn--active"
+                @click="changeFilter('active')"
+                :class="{ disabled: isActiveBtnDisabled }"
+              />
+              <SortedButton
+                label="Completed"
+                btnClass="btn--completed"
+                @click="changeFilter('completed')"
+                :class="{ disabled: isCompletedBtnDisabled }"
+              />
             </div>
           </div>
 
@@ -163,5 +195,10 @@ const editTaskTextHandler = (editedTaskText) => {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 7px;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 </style>
