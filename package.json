@@ -9,6 +9,7 @@
         "lint": "eslint src/**/*.{js,vue}"
     },
     "dependencies": {
+        "@vueuse/core": "^10.11.0",
         "less": "^4.2.0",
         "vue": "^3.2.45",
         "vue-router": "^4.1.6",

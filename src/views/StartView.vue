@@ -6,11 +6,12 @@ import TaskItem from '@/components/general/TaskItem.vue';
 
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
+import { useLocalStorage } from '@vueuse/core';
 
 const toast = useToast();
 
-const tasks = ref([]);
-const isShowResult = ref(false);
+const tasks = useLocalStorage('tasks', []);
+const isShowSortedBtns = ref(false);
 const isShowClearBtn = ref(false);
 const editedTaskId = ref(null);
 const filterType = ref('all');
@@ -22,7 +23,6 @@ const updateTaskTextHandler = (task) => {
 
   if (trimmedTask) {
     tasks.value.push({ id: generateUniqueId(), text: trimmedTask, completed: false });
-    isShowResult.value = true;
     toast.success('Задача успешно добавлена');
   } else {
     toast.error('Пожалуйста, введите текст задачи');
@@ -31,7 +31,6 @@ const updateTaskTextHandler = (task) => {
 
 const deleteTaskHandler = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
-  isShowResult.value = tasks.value.length > 0;
   toast.success('Задача успешно удалена');
 };
 
@@ -52,7 +51,6 @@ const deleteCompletedTaskHandler = () => {
   tasks.value = tasks.value.filter((task) => !task.completed);
 
   if (tasks.value.length < initialTasksLength) {
-    isShowResult.value = tasks.value.length > 0;
     toast.success('Выполненные задачи были удалены');
   }
 };
@@ -83,6 +81,12 @@ const editTaskTextHandler = (editedTaskText) => {
   toast.success('Задача успешно отредактирована!');
 };
 
+const changeFilter = (filter) => {
+  filterType.value = filter;
+};
+
+const isShowSorted = computed(() => (isShowSortedBtns.value = tasks.value.length > 0));
+
 const filteredTasks = computed(() => {
   if (filterType.value === 'active') {
     return tasks.value.filter((task) => !task.completed);
@@ -92,10 +96,6 @@ const filteredTasks = computed(() => {
     return tasks.value;
   }
 });
-
-const changeFilter = (filter) => {
-  filterType.value = filter;
-};
 
 const isActiveBtnDisabled = computed(
   () => filterType.value === 'active' || tasks.value.filter((task) => !task.completed).length === 0
@@ -113,7 +113,7 @@ const isCompletedBtnDisabled = computed(
         <div class="app-display">
           <DisplayInput @updateTaskText="updateTaskTextHandler" />
         </div>
-        <div v-if="isShowResult" class="app-result">
+        <div class="app-result">
           <div class="app-table">
             <ul class="app-list">
               <TaskItem
@@ -131,7 +131,7 @@ const isCompletedBtnDisabled = computed(
               />
             </ul>
           </div>
-          <div class="app-sorted">
+          <div v-if="isShowSorted" class="app-sorted">
             <div class="app-sorted__btns">
               <SortedButton label="All" btnClass="btn--all" @click="changeFilter('all')" />
               <SortedButton
