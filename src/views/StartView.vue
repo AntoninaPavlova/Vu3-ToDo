@@ -138,13 +138,13 @@ const isCompletedBtnDisabled = computed(
                 label="Active"
                 btnClass="btn--active"
                 @click="changeFilter('active')"
-                :class="{ disabled: isActiveBtnDisabled }"
+                :disabled="isActiveBtnDisabled"
               />
               <SortedButton
                 label="Completed"
                 btnClass="btn--completed"
                 @click="changeFilter('completed')"
-                :class="{ disabled: isCompletedBtnDisabled }"
+                :disabled="isCompletedBtnDisabled"
               />
             </div>
           </div>
@@ -197,7 +197,7 @@ const isCompletedBtnDisabled = computed(
   column-gap: 7px;
 }
 
-.disabled {
+.app-sorted__btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
