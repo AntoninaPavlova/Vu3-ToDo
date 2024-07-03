@@ -27,4 +27,13 @@ const props = defineProps({
     color: var(--violet-color);
   }
 }
+
+@media (max-width: 1169.98px) {
+  .app-sorted__btn {
+    &:hover {
+      background-color: inherit;
+      color: inherit;
+    }
+  }
+}
 </style>

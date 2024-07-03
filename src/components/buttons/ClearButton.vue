@@ -33,4 +33,13 @@ const deleteCompletedTask = () => {
     color: var(--violet-color);
   }
 }
+
+@media (max-width: 1169.98px) {
+  .app-clear__btn {
+    &:hover {
+      background-color: inherit;
+      color: inherit;
+    }
+  }
+}
 </style>
