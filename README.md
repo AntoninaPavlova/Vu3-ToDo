@@ -4,7 +4,7 @@
 ## Описание
 Проект для управления списком задач.
 
-[Смотреть видео](https://github.com/AntoninaPavlova/Vue3-ToDo/assets/114396404/46662380-26c9-410b-b45b-71c17f652c27)
+[Смотреть видео](https://github.com/AntoninaPavlova/Vue3-ToDo/assets/114396404/45a68ed6-a5b0-4c01-9db5-6af0a4ab0f14)
 
 ## Функционал
 Приложение позволяет пользователю:
