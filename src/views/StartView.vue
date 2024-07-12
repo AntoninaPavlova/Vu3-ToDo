@@ -4,7 +4,7 @@ import ClearButton from '@/components/buttons/ClearButton.vue';
 import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
 
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useLocalStorage } from '@vueuse/core';
 
@@ -55,6 +55,8 @@ const deleteCompletedTaskHandler = () => {
   if (tasks.value.length < initialTasksLength) {
     toast.success('Выполненные задачи были удалены');
   }
+
+  checkCompletedTasks();
 };
 
 const checkCompletedTasks = () => {

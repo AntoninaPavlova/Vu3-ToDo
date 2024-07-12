@@ -11,7 +11,9 @@ const deleteCompletedTask = () => {
 </script>
 
 <template>
-  <button @click="deleteCompletedTask" type="button" class="app-clear__btn btn--clear-completed">{{ label }}</button>
+  <button @click="deleteCompletedTask" type="button" class="app-clear__btn btn--clear-completed">
+    {{ label }}
+  </button>
 </template>
 
 <style scoped>

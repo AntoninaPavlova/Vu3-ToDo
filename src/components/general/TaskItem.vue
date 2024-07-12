@@ -10,7 +10,7 @@ const props = defineProps({
 
 const editedTaskText = ref(props.taskText);
 
-const emit = defineEmits(['deleteTask', 'completeTask', 'startEditing', 'editTaskText']);
+const emit = defineEmits(['deleteTask', 'completedTask', 'startEditing', 'editTaskText']);
 
 const deleteTask = () => {
   emit('deleteTask', props.taskId);
