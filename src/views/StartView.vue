@@ -11,8 +11,8 @@ import { useLocalStorage } from '@vueuse/core';
 const toast = useToast();
 
 const tasks = useLocalStorage('tasks', []);
-const isShowSortedBtns = ref(false);
-const isShowClearBtn = ref(false);
+const isShowSortedBtns = useLocalStorage('isShowSortedBtns', false);
+const isShowClearBtn = useLocalStorage('isShowClearBtn', false);
 const editedTaskId = ref(null);
 const filterType = ref('all');
 
@@ -61,6 +61,8 @@ const deleteCompletedTaskHandler = () => {
 
 const checkCompletedTasks = () => {
   isShowClearBtn.value = tasks.value.some((task) => task.completed);
+
+  useLocalStorage('isShowClearBtn', isShowClearBtn.value);
 };
 
 const startEditingHandler = (id) => {
