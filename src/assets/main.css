@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
+/* 
+Название assets не совсем подходит для данного файла 
+По сути тут описываются стили которые сбрасывают дефолтные стили у браузера
+я бы сделал папку с названием styles
+а в неё бы добавил файл reset.css
+и перенес бы эти стили туда
+*/
 :root {
   --white-color: #ffffff;
   --white-dark-color: #f8f9fa;
@@ -34,6 +41,6 @@ button {
 }
 
 .Vue-Toastification__toast--success {
-  background-color: #3857D3!important;
+  background-color: #3857D3 !important;
   color: #fff;
 }

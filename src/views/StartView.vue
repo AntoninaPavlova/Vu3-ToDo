@@ -16,6 +16,19 @@ const isShowClearBtn = useLocalStorage('isShowClearBtn', false);
 const editedTaskId = ref(null);
 const filterType = ref('all');
 
+// Так, смотри
+// Хорошей практикой является вынесение локалсторадж ключей в отдельный файл
+// Я бы в папке consts создал бы папку с названием localStorageKeys
+// И туда бы поместил все ключи, так как при написании ключа можно допустить ошибку
+// И вообще в целом вынесение текстовых значений является хорошей практикой)
+
+// То же самое касается и вынесение сообщений в тостах.
+// Смотри как это сделал я
+// https://github.com/gorbatkoff/sfedu-schedule/blob/master/src/shared/const/toast/toast.ts
+
+// Я думаю лучше использовать какую-нибудь библиотеку для генерации
+// рандомных id
+// Советую присмотреться к библиотек под нзванием uuid
 const generateUniqueId = () => Date.now();
 
 const updateTaskTextHandler = (task) => {

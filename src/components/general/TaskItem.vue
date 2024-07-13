@@ -10,6 +10,11 @@ const props = defineProps({
 
 const editedTaskText = ref(props.taskText);
 
+// Хмм..
+// Смотри, я бы вынес все эммиты в папку конст
+// А затем импортил бы их
+// То есть это выглядело бы так
+// const DELETE_TASK_EMIT = "deleteTask" и т.д
 const emit = defineEmits(['deleteTask', 'completedTask', 'startEditing', 'editTaskText']);
 
 const deleteTask = () => {
