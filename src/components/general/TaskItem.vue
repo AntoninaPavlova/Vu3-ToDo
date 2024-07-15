@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, defineEmits, ref, computed } from 'vue';
+import * as Emits from '@/consts/emits.js';
 
 const props = defineProps({
   taskText: String,
@@ -10,27 +11,27 @@ const props = defineProps({
 
 const editedTaskText = ref(props.taskText);
 
-// Хмм..
-// Смотри, я бы вынес все эммиты в папку конст
-// А затем импортил бы их
-// То есть это выглядело бы так
-// const DELETE_TASK_EMIT = "deleteTask" и т.д
-const emit = defineEmits(['deleteTask', 'completedTask', 'startEditing', 'editTaskText']);
+const emit = defineEmits([
+  Emits.DELETE_TASK_EMIT,
+  Emits.COMPLETED_TASK_EMIT,
+  Emits.START_EDITING_EMIT,
+  Emits.EDIT_TASK_TEXT_EMIT,
+]);
 
 const deleteTask = () => {
-  emit('deleteTask', props.taskId);
+  emit(Emits.DELETE_TASK_EMIT, props.taskId);
 };
 
 const completedTask = () => {
-  emit('completedTask', props.taskId);
+  emit(Emits.COMPLETED_TASK_EMIT, props.taskId);
 };
 
 const startEditing = () => {
-  emit('startEditing', props.taskId);
+  emit(Emits.START_EDITING_EMIT, props.taskId);
 };
 
 const editTaskText = (editTaskText) => {
-  emit('editTaskText', editTaskText);
+  emit(Emits.EDIT_TASK_TEXT_EMIT, editTaskText);
 };
 
 const isComparisonTaskId = computed(() => {

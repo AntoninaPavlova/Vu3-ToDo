@@ -1,8 +1,12 @@
 <script setup>
-import SortedButton from '@/components/buttons/SortedButton.vue';
-import ClearButton from '@/components/buttons/ClearButton.vue';
+import { v4 as uuidv4 } from 'uuid';
+
+import ButtonResult from '@/components/ButtonResult.vue';
 import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
+
+import { TASKS_KEY, IS_SHOW_SORTED_BTNS_KEY, IS_SHOW_CLEAR_BTN_KEY } from '@/consts/localStorageKeys/keys.js';
+import { MESSAGES } from '@/consts/toast/messages.js';
 
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
@@ -10,41 +14,27 @@ import { useLocalStorage } from '@vueuse/core';
 
 const toast = useToast();
 
-const tasks = useLocalStorage('tasks', []);
-const isShowSortedBtns = useLocalStorage('isShowSortedBtns', false);
-const isShowClearBtn = useLocalStorage('isShowClearBtn', false);
+const tasks = useLocalStorage(TASKS_KEY, []);
+const isShowSortedBtns = useLocalStorage(IS_SHOW_SORTED_BTNS_KEY, false);
+const isShowClearBtn = useLocalStorage(IS_SHOW_CLEAR_BTN_KEY, false);
+
 const editedTaskId = ref(null);
 const filterType = ref('all');
-
-// Так, смотри
-// Хорошей практикой является вынесение локалсторадж ключей в отдельный файл
-// Я бы в папке consts создал бы папку с названием localStorageKeys
-// И туда бы поместил все ключи, так как при написании ключа можно допустить ошибку
-// И вообще в целом вынесение текстовых значений является хорошей практикой)
-
-// То же самое касается и вынесение сообщений в тостах.
-// Смотри как это сделал я
-// https://github.com/gorbatkoff/sfedu-schedule/blob/master/src/shared/const/toast/toast.ts
-
-// Я думаю лучше использовать какую-нибудь библиотеку для генерации
-// рандомных id
-// Советую присмотреться к библиотек под нзванием uuid
-const generateUniqueId = () => Date.now();
 
 const updateTaskTextHandler = (task) => {
   const trimmedTask = task.trim();
 
   if (trimmedTask) {
-    tasks.value.push({ id: generateUniqueId(), text: trimmedTask, completed: false });
-    toast.success('Задача успешно добавлена');
+    tasks.value.push({ id: uuidv4(), text: trimmedTask, completed: false });
+    toast.success(MESSAGES.ADD_TASK_SUCCESS);
   } else {
-    toast.error('Пожалуйста, введите текст задачи');
+    toast.error(MESSAGES.ADD_TASK_EMPTY);
   }
 };
 
 const deleteTaskHandler = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
-  toast.success('Задача успешно удалена');
+  toast.success(MESSAGES.DELETE_TASK_SUCCESS);
 
   checkCompletedTasks();
 };
@@ -66,7 +56,7 @@ const deleteCompletedTaskHandler = () => {
   tasks.value = tasks.value.filter((task) => !task.completed);
 
   if (tasks.value.length < initialTasksLength) {
-    toast.success('Выполненные задачи были удалены');
+    toast.success(MESSAGES.DELETE_COMPLETED_SUCCESS);
   }
 
   checkCompletedTasks();
@@ -85,7 +75,7 @@ const startEditingHandler = (id) => {
 const editTaskTextHandler = (editedTaskText) => {
   const editedTrimmedTask = editedTaskText.trim();
   if (editedTrimmedTask === '') {
-    toast.error('Текст задачи не может быть пустым!');
+    toast.error(MESSAGES.TASK_TEXT_EMPTY);
     return;
   }
 
@@ -97,7 +87,7 @@ const editTaskTextHandler = (editedTaskText) => {
   });
 
   editedTaskId.value = null;
-  toast.success('Задача успешно отредактирована!');
+  toast.success(MESSAGES.EDIT_TASK_SUCCESS);
 };
 
 const changeFilter = (filter) => {
@@ -155,34 +145,39 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
           </div>
           <div v-if="isShowSorted" class="app-sorted">
             <div class="app-sorted__btns">
-              <SortedButton
+              <ButtonResult
                 label="All"
-                btnClass="btn--all"
+                btnClass="app-sorted__btn"
                 @click="changeFilter('all')"
                 :class="{ active: filterType === 'all' }"
+                method="SortedButton"
               />
-              <SortedButton
+              <ButtonResult
                 label="Active"
-                btnClass="btn--active"
+                btnClass="app-sorted__btn"
                 @click="changeFilter('active')"
                 :class="{ active: filterType === 'active' }"
                 :disabled="isActiveBtnDisabled"
+                method="SortedButton"
               />
-              <SortedButton
+              <ButtonResult
                 label="Completed"
-                btnClass="btn--completed"
+                btnClass="app-sorted__btn"
                 @click="changeFilter('completed')"
-                :disabled="isCompletedBtnDisabled"
                 :class="{ active: filterType === 'completed' }"
+                :disabled="isCompletedBtnDisabled"
+                method="SortedButton"
               />
             </div>
           </div>
           <div class="app-clear">
             <div class="app-clear__btns">
-              <ClearButton
+              <ButtonResult
                 v-if="isShowClearBtn"
                 label="Clear completed"
-                @deleteCompletedTask="deleteCompletedTaskHandler"
+                btnClass="app-clear__btn"
+                @click="deleteCompletedTaskHandler"
+                method="ClearButton"
               />
             </div>
           </div>
@@ -225,12 +220,47 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
   column-gap: 7px;
 }
 
-.app-sorted__btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+.app-sorted__btn,
+.app-clear__btn {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white-color);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  &:hover {
+    background-color: var(--white-color);
+    color: var(--violet-color);
+  }
+}
+
+.app-sorted__btn {
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.app-clear__btn {
+  width: 100%;
 }
 
 .active {
   border: 1px solid #fff;
+}
+
+@media (max-width: 1169.98px) {
+  .app-sorted__btn,
+  .app-clear__btn {
+    &:hover {
+      background-color: inherit;
+      color: inherit;
+    }
+  }
 }
 </style>

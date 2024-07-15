@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import StartView from '@/views/StartView.vue';
-import Routes from '@/consts/Routes';
+import { Routes } from '@/consts/routes/Routes';
 
 const routes = [
   {

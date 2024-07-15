@@ -1,11 +1,13 @@
 <script setup>
 import { defineEmits, ref } from 'vue';
+import * as Emits from '@/consts/emits.js';
 
-const emit = defineEmits(['updateTaskText']);
+const emit = defineEmits([Emits.UPDATE_TASK_TEXT_EMIT]);
+
 const taskText = ref('');
 
 const updateTaskText = () => {
-  emit('updateTaskText', taskText.value);
+  emit(Emits.UPDATE_TASK_TEXT_EMIT, taskText.value);
   taskText.value = '';
 };
 </script>
