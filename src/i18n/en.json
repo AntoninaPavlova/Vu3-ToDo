@@ -1,0 +1,19 @@
+{
+  "notification": {
+    "addTaskSuccess": "Task successfully added",
+    "addTaskEmpty": "Please enter task text",
+    "deleteTaskSuccess": "Task successfully deleted",
+    "deleteCompletedSuccess": "Completed tasks have been deleted",
+    "taskTextEmpty": "Task text cannot be empty!",
+    "editTaskSuccess": "Task successfully edited!"
+  },
+  "title": "Todo List",
+  "placeholder": "What needs to be done?",
+  "buttons": {
+    "buttonAll": "All",
+    "buttonActive": "Active",
+    "buttonCompleted": "Completed",
+    "buttonClear": "Clear completed"
+  },
+  "changeLang": "English"
+}

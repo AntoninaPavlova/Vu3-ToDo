@@ -5,18 +5,27 @@ import ButtonResult from '@/components/ButtonResult.vue';
 import DisplayInput from '@/components/general/DisplayInput.vue';
 import TaskItem from '@/components/general/TaskItem.vue';
 
-import { TASKS_KEY, IS_SHOW_SORTED_BTNS_KEY, IS_SHOW_CLEAR_BTN_KEY } from '@/consts/localStorageKeys/keys.js';
-import { MESSAGES } from '@/consts/toast/messages.js';
+import {
+  TASKS_KEY,
+  IS_SHOW_SORTED_BTNS_KEY,
+  IS_SHOW_CLEAR_BTN_KEY,
+  LOCALE_KEY,
+} from '@/consts/localStorageKeys/keys.js';
 
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useLocalStorage } from '@vueuse/core';
+
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n({ useScope: 'global' });
 
 const toast = useToast();
 
 const tasks = useLocalStorage(TASKS_KEY, []);
 const isShowSortedBtns = useLocalStorage(IS_SHOW_SORTED_BTNS_KEY, false);
 const isShowClearBtn = useLocalStorage(IS_SHOW_CLEAR_BTN_KEY, false);
+const savedLocale = useLocalStorage(LOCALE_KEY, 'en');
 
 const editedTaskId = ref(null);
 const filterType = ref('all');
@@ -26,15 +35,15 @@ const updateTaskTextHandler = (task) => {
 
   if (trimmedTask) {
     tasks.value.push({ id: uuidv4(), text: trimmedTask, completed: false });
-    toast.success(MESSAGES.ADD_TASK_SUCCESS);
+    toast.success(t('notification.addTaskSuccess'));
   } else {
-    toast.error(MESSAGES.ADD_TASK_EMPTY);
+    toast.error(t('notification.addTaskEmpty'));
   }
 };
 
 const deleteTaskHandler = (id) => {
   tasks.value = tasks.value.filter((task) => task.id !== id);
-  toast.success(MESSAGES.DELETE_TASK_SUCCESS);
+  toast.success(t('notification.deleteTaskSuccess'));
 
   checkCompletedTasks();
 };
@@ -56,7 +65,7 @@ const deleteCompletedTaskHandler = () => {
   tasks.value = tasks.value.filter((task) => !task.completed);
 
   if (tasks.value.length < initialTasksLength) {
-    toast.success(MESSAGES.DELETE_COMPLETED_SUCCESS);
+    toast.success(t('notification.deleteCompletedSuccess'));
   }
 
   checkCompletedTasks();
@@ -75,7 +84,7 @@ const startEditingHandler = (id) => {
 const editTaskTextHandler = (editedTaskText) => {
   const editedTrimmedTask = editedTaskText.trim();
   if (editedTrimmedTask === '') {
-    toast.error(MESSAGES.TASK_TEXT_EMPTY);
+    toast.error(t('notification.taskTextEmpty'));
     return;
   }
 
@@ -87,7 +96,7 @@ const editTaskTextHandler = (editedTaskText) => {
   });
 
   editedTaskId.value = null;
-  toast.success(MESSAGES.EDIT_TASK_SUCCESS);
+  toast.success(t('notification.editTaskSuccess'));
 };
 
 const changeFilter = (filter) => {
@@ -115,13 +124,25 @@ const filteredTasks = computed(() => {
 
 const isActiveBtnDisabled = computed(() => tasks.value.filter((task) => !task.completed).length === 0);
 const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.completed).length === 0);
+
+locale.value = savedLocale.value;
+
+const changeLangHandler = () => {
+  if (locale.value === 'en') {
+    locale.value = 'ru';
+    savedLocale.value = 'ru';
+  } else if (locale.value === 'ru') {
+    locale.value = 'en';
+    savedLocale.value = 'en';
+  }
+};
 </script>
 
 <template>
   <div class="app-container">
     <main class="app-main">
       <section class="app-section">
-        <h1 class="app-title">Todo List</h1>
+        <h1 class="app-title">{{ $t('title') }}</h1>
         <div class="app-display">
           <DisplayInput @updateTaskText="updateTaskTextHandler" />
         </div>
@@ -146,14 +167,14 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
           <div v-if="isShowSorted" class="app-sorted">
             <div class="app-sorted__btns">
               <ButtonResult
-                label="All"
+                :label="$t('buttons.buttonAll')"
                 btnClass="app-sorted__btn"
                 @click="changeFilter('all')"
                 :class="{ active: filterType === 'all' }"
                 method="SortedButton"
               />
               <ButtonResult
-                label="Active"
+                :label="$t('buttons.buttonActive')"
                 btnClass="app-sorted__btn"
                 @click="changeFilter('active')"
                 :class="{ active: filterType === 'active' }"
@@ -161,7 +182,7 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
                 method="SortedButton"
               />
               <ButtonResult
-                label="Completed"
+                :label="$t('buttons.buttonCompleted')"
                 btnClass="app-sorted__btn"
                 @click="changeFilter('completed')"
                 :class="{ active: filterType === 'completed' }"
@@ -174,13 +195,17 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
             <div class="app-clear__btns">
               <ButtonResult
                 v-if="isShowClearBtn"
-                label="Clear completed"
+                :label="$t('buttons.buttonClear')"
                 btnClass="app-clear__btn"
                 @click="deleteCompletedTaskHandler"
                 method="ClearButton"
               />
             </div>
           </div>
+        </div>
+
+        <div class="app-multilingualism">
+          <p class="app-multilingualism__language" @click="changeLangHandler">{{ $t('changeLang') }}</p>
         </div>
       </section>
     </main>
@@ -247,11 +272,22 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
 }
 
 .app-clear__btn {
+  margin-bottom: 15px;
   width: 100%;
 }
 
 .active {
   border: 1px solid #fff;
+}
+
+.app-multilingualism__language {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  text-align: center;
+
+  cursor: pointer;
 }
 
 @media (max-width: 1169.98px) {
@@ -261,6 +297,13 @@ const isCompletedBtnDisabled = computed(() => tasks.value.filter((task) => task.
       background-color: inherit;
       color: inherit;
     }
+  }
+}
+
+@media (max-width: 414.98px) {
+  .app-sorted__btn,
+  .app-clear__btn {
+    font-size: 12px;
   }
 }
 </style>

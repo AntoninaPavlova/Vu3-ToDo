@@ -1,0 +1,19 @@
+{
+  "notification": {
+    "addTaskSuccess": "Задача успешно добавлена",
+    "addTaskEmpty": "Пожалуйста, введите текст задачи",
+    "deleteTaskSuccess": "Задача успешно удалена",
+    "deleteCompletedSuccess": "Выполненные задачи были удалены",
+    "taskTextEmpty": "Текст задачи не может быть пустым!",
+    "editTaskSuccess": "Задача успешно отредактирована!"
+  },
+  "title": "Список дел",
+  "placeholder": "Что нужно сделать?",
+  "buttons": {
+    "buttonAll": "Все",
+    "buttonActive": "Активные",
+    "buttonCompleted": "Завершенные",
+    "buttonClear": "Удалить завершенные"
+  },
+  "changeLang": "Русский"
+}

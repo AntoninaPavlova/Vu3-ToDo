@@ -2,6 +2,10 @@
 import { defineEmits, ref } from 'vue';
 import * as Emits from '@/consts/emits.js';
 
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n({ useScope: 'global' });
+
 const emit = defineEmits([Emits.UPDATE_TASK_TEXT_EMIT]);
 
 const taskText = ref('');
@@ -16,7 +20,7 @@ const updateTaskText = () => {
   <input
     type="text"
     class="app-display__input"
-    placeholder="What needs to be done?"
+    :placeholder="$t('placeholder')"
     @keyup.enter="updateTaskText"
     v-model="taskText"
   />
